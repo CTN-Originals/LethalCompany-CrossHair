@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 namespace CrossHair
@@ -19,8 +18,15 @@ namespace CrossHair
 		public static ConfigEntry<int> CrossHairColor_BLUE;
 		public static ConfigEntry<int> CrossHairColor_ALPHA;
 
+		public static GameObject crossHair;
+		public static GameObject crossHairShadow;
+
+		public static Plugin Instance;
+
         private void Awake()
         {
+			if (Instance == null) {Instance = this;}
+
             // Plugin startup logic
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
@@ -42,8 +48,8 @@ namespace CrossHair
 
 			Logger.LogInfo($"CrossHairColor: ({CrossHairColor_RED.Value}, {CrossHairColor_GREEN.Value}, {CrossHairColor_BLUE.Value}, {CrossHairColor_ALPHA.Value})");
 		}
-    }
-
+	}
+	
 
 	[HarmonyPatch(typeof(HUDManager))]
 	internal class HUDManagerPatch
@@ -53,6 +59,7 @@ namespace CrossHair
 		private static void Start(ref HUDManager __instance) {
 			// cursor path: System/UI/Canvas/PlayerCursor/Cursor 
 			GameObject crossHair = new GameObject("CrossHair");
+			Plugin.crossHair = crossHair;
 			Transform parent = __instance.PTTIcon.transform.parent.parent.parent.Find("PlayerCursor").Find("Cursor").transform;
 
 			crossHair.AddComponent<RectTransform>();
@@ -61,6 +68,8 @@ namespace CrossHair
 			rect.SetParent(parent, false);
 			rect.anchoredPosition = new Vector2(0, 0);
 			rect.localPosition = new Vector3(0, 0, 0);
+			rect.offsetMin = new Vector2(-500, -500);
+			rect.offsetMax = new Vector2(500, 500);
 
 			text.text = Plugin.CrossHairText.Value;
 			text.fontSize = Plugin.CrossHairSize.Value;
@@ -73,17 +82,47 @@ namespace CrossHair
 
 			text.alignment = TextAlignmentOptions.Center;
 			text.font = __instance.controlTipLines[0].font;
-			text.overflowMode = 0;
+			// text.overflowMode = 0;
 			text.enabled = true;
 
 			GameObject shadow = GameObject.Instantiate(crossHair, parent);
+			Plugin.crossHairShadow = shadow;
 			TextMeshProUGUI shadowText = shadow.GetComponent<TextMeshProUGUI>();
 			shadow.name = "CrossHairShadow";
 			shadowText.fontSize = Plugin.CrossHairSize.Value;
 			shadowText.color = new Color32(byte.MinValue, byte.MinValue, byte.MinValue, 100);
-			shadowText.rectTransform.localPosition = new Vector3(2, -2, 0);
+			shadowText.rectTransform.localPosition = new Vector3(2, -4, 0);
 
 			rect.SetAsLastSibling();
 		}
+
+
+		// [HarmonyPatch("AddChatMessage")]
+		// [HarmonyPostfix]
+		// private static void AddChatMessage(ref HUDManager __instance) {
+		// 	string message = __instance.lastChatMessage;
+		// 	Debug.Log("Chat message: " + message);
+		// 	if (message.StartsWith("/update")) {
+		// 		UpdateCrossHairValues(Plugin.crossHair.GetComponent<TextMeshProUGUI>());
+		// 		UpdateCrossHairValues(Plugin.crossHairShadow.GetComponent<TextMeshProUGUI>(), false);
+		// 	}
+		// }
+
+		// public static void UpdateCrossHairValues(TextMeshProUGUI element, bool color = true) {
+		// 	Debug.Log("Updating crosshair values");
+
+		// 	element.text = Plugin.CrossHairText.Value;
+		// 	element.fontSize = Plugin.CrossHairSize.Value;
+		// 	if (color) {
+		// 		element.color = new Color32(
+		// 			(byte)Plugin.CrossHairColor_RED.Value,
+		// 			(byte)Plugin.CrossHairColor_GREEN.Value,
+		// 			(byte)Plugin.CrossHairColor_BLUE.Value,
+		// 			(byte)Plugin.CrossHairColor_ALPHA.Value
+		// 		);
+		// 	}
+		// }
 	}
+
+	
 }
