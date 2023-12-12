@@ -12,6 +12,9 @@ Adds a CrossHair to the center of your screen to indicate where you are aiming.
 Or install using the Thunderstore Mod Manager: https://thunderstore.io/c/lethal-company/p/CTNOriginals/CrossHair/
 
 ## Changelog
+### v1.0.3
+- Added CrossHairShadow<bool> config option, which enables/disables the CrossHair shadow. Suggested by [HazardousMonkey](https://github.com/HazardousMonkey) ([#1](https://github.com/CTN-Originals/LethalCompany-CrossHair/issues/1))
+- Reduced the distance of the shadow from the CrossHair
 ### v1.0.2
 - Fixed CrossHair overflow wrapping once the size is set to > 60
 ### v1.0.1

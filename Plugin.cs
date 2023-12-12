@@ -13,6 +13,8 @@ namespace CrossHair
 
 		public static ConfigEntry<string> CrossHairText;
 		public static ConfigEntry<float> CrossHairSize;
+		public static ConfigEntry<bool> CrossHairShadow;
+
 		public static ConfigEntry<int> CrossHairColor_RED;
 		public static ConfigEntry<int> CrossHairColor_GREEN;
 		public static ConfigEntry<int> CrossHairColor_BLUE;
@@ -37,15 +39,15 @@ namespace CrossHair
 		private void ConfigFile() {
 			CrossHairText = Config.Bind("General", "CrossHairText", "-  +  -", "Text to display as crosshair (use \\n for new line)");
 			Logger.LogInfo($"CrossHairText: {CrossHairText.Value}");
-
 			CrossHairSize = Config.Bind("General", "CrossHairSize", 40f, "Size of the crosshair");
 			Logger.LogInfo($"CrossHairSize: {CrossHairSize.Value}");
+			CrossHairShadow = Config.Bind("General", "CrossHairShadow", true, "Whether to display a shadow behind the crosshair");
+			Logger.LogInfo($"CrossHairShadow: {CrossHairShadow.Value}");
 
 			CrossHairColor_RED = Config.Bind("Color", "CrossHairColor_RED", 255, "Red value of the crosshair");
 			CrossHairColor_GREEN = Config.Bind("Color", "CrossHairColor_GREEN", 255, "Green value of the crosshair");
 			CrossHairColor_BLUE = Config.Bind("Color", "CrossHairColor_BLUE", 255, "Blue value of the crosshair");
 			CrossHairColor_ALPHA = Config.Bind("Color", "CrossHairColor_ALPHA", 50, "Alpha value of the crosshair");
-
 			Logger.LogInfo($"CrossHairColor: ({CrossHairColor_RED.Value}, {CrossHairColor_GREEN.Value}, {CrossHairColor_BLUE.Value}, {CrossHairColor_ALPHA.Value})");
 		}
 	}
@@ -82,8 +84,9 @@ namespace CrossHair
 
 			text.alignment = TextAlignmentOptions.Center;
 			text.font = __instance.controlTipLines[0].font;
-			// text.overflowMode = 0;
 			text.enabled = true;
+
+			if (Plugin.CrossHairShadow.Value != true) { return; }
 
 			GameObject shadow = GameObject.Instantiate(crossHair, parent);
 			Plugin.crossHairShadow = shadow;
@@ -91,7 +94,7 @@ namespace CrossHair
 			shadow.name = "CrossHairShadow";
 			shadowText.fontSize = Plugin.CrossHairSize.Value;
 			shadowText.color = new Color32(byte.MinValue, byte.MinValue, byte.MinValue, 100);
-			shadowText.rectTransform.localPosition = new Vector3(2, -4, 0);
+			shadowText.rectTransform.localPosition = new Vector3(2, -2, 0);
 
 			rect.SetAsLastSibling();
 		}
@@ -101,10 +104,10 @@ namespace CrossHair
 		// [HarmonyPostfix]
 		// private static void AddChatMessage(ref HUDManager __instance) {
 		// 	string message = __instance.lastChatMessage;
-		// 	Debug.Log("Chat message: " + message);
+		// 	// Debug.Log("Chat message: " + message);
 		// 	if (message.StartsWith("/update")) {
-		// 		UpdateCrossHairValues(Plugin.crossHair.GetComponent<TextMeshProUGUI>());
-		// 		UpdateCrossHairValues(Plugin.crossHairShadow.GetComponent<TextMeshProUGUI>(), false);
+		// 		if (Plugin.crossHair) UpdateCrossHairValues(Plugin.crossHair.GetComponent<TextMeshProUGUI>());
+		// 		if (Plugin.crossHairShadow) UpdateCrossHairValues(Plugin.crossHairShadow.GetComponent<TextMeshProUGUI>(), false);
 		// 	}
 		// }
 
