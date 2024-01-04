@@ -65,13 +65,17 @@ namespace CrossHair
 		[HarmonyPatch("Start")]
 		[HarmonyPostfix]
 		private static void Start(ref HUDManager __instance) {
-			// cursor path: System/UI/Canvas/PlayerCursor/Cursor 
-			GameObject crossHair = new GameObject("CrossHair");
+			//> cursor path: System/UI/Canvas/PlayerCursor/Cursor
+			//> Reference obj: Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)
+			GameObject referenceText = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)");
+			GameObject crossHair = GameObject.Instantiate(referenceText);
+			crossHair.name = "CrossHair";
+
 			Plugin.crossHair = crossHair;
 			Transform parent = __instance.PTTIcon.transform.parent.parent.parent.Find("PlayerCursor").Find("Cursor").transform;
 
-			crossHair.AddComponent<RectTransform>();
-			TextMeshProUGUI text = crossHair.AddComponent<TextMeshProUGUI>();
+			TextMeshProUGUI text = crossHair.GetComponent<TextMeshProUGUI>();
+
 			RectTransform rect = text.rectTransform;
 			rect.SetParent(parent, false);
 			rect.anchoredPosition = new Vector2(0, 0);
