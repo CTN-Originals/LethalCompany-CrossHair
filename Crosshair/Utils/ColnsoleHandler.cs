@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CrossHair
+namespace CrossHair.Utils
 {
 	public static class Console {
 		public static bool DebugState = false;
