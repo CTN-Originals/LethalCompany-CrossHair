@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
@@ -25,12 +26,16 @@ namespace CrossHair
 
 		public static Plugin Instance;
 
+		public static ManualLogSource CLog;
+
         private void Awake()
         {
 			if (Instance == null) {Instance = this;}
+			
+			CLog = Logger;
 
             // Plugin startup logic
-            Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+            Console.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
 			this.ConfigFile();
 			harmony.PatchAll();
@@ -38,20 +43,21 @@ namespace CrossHair
 
 		private void ConfigFile() {
 			CrossHairText = Config.Bind("General", "CrossHairText", "-  +  -", "Text to display as crosshair (use \\n for new line)");
-			Logger.LogInfo($"CrossHairText: {CrossHairText.Value}");
+			Console.LogInfo($"CrossHairText: {CrossHairText.Value}");
 			CrossHairSize = Config.Bind("General", "CrossHairSize", 40f, "Size of the crosshair");
-			Logger.LogInfo($"CrossHairSize: {CrossHairSize.Value}");
+			Console.LogInfo($"CrossHairSize: {CrossHairSize.Value}");
 			CrossHairShadow = Config.Bind("General", "CrossHairShadow", true, "Whether to display a shadow behind the crosshair");
-			Logger.LogInfo($"CrossHairShadow: {CrossHairShadow.Value}");
+			Console.LogInfo($"CrossHairShadow: {CrossHairShadow.Value}");
 
 			CrossHairColor_RED = Config.Bind("Color", "CrossHairColor_RED", 255, "Red value of the crosshair");
 			CrossHairColor_GREEN = Config.Bind("Color", "CrossHairColor_GREEN", 255, "Green value of the crosshair");
 			CrossHairColor_BLUE = Config.Bind("Color", "CrossHairColor_BLUE", 255, "Blue value of the crosshair");
 			CrossHairColor_ALPHA = Config.Bind("Color", "CrossHairColor_ALPHA", 50, "Alpha value of the crosshair");
-			Logger.LogInfo($"CrossHairColor: ({CrossHairColor_RED.Value}, {CrossHairColor_GREEN.Value}, {CrossHairColor_BLUE.Value}, {CrossHairColor_ALPHA.Value})");
+			Console.LogInfo($"CrossHairColor: ({CrossHairColor_RED.Value}, {CrossHairColor_GREEN.Value}, {CrossHairColor_BLUE.Value}, {CrossHairColor_ALPHA.Value})");
 		}
 	}
 	
+
 
 	[HarmonyPatch(typeof(HUDManager))]
 	internal class HUDManagerPatch
@@ -72,7 +78,7 @@ namespace CrossHair
 			rect.localPosition = new Vector3(0, 0, 0);
 			rect.offsetMin = new Vector2(-500, -500);
 			rect.offsetMax = new Vector2(500, 500);
-
+			
 			text.text = Plugin.CrossHairText.Value;
 			text.fontSize = Plugin.CrossHairSize.Value;
 			text.color = new Color32(
@@ -129,3 +135,5 @@ namespace CrossHair
 
 	
 }
+
+
