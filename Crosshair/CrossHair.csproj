@@ -16,9 +16,9 @@
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" />
   </ItemGroup>
   <ItemGroup>
-	<Reference Include="Assembly-CSharp"><HintPath>lib\Assembly-CSharp.dll</HintPath></Reference>
-	<Reference Include="UnityEngine.UI"><HintPath>lib\UnityEngine.UI.dll</HintPath></Reference>
-	<Reference Include="Unity.TextMeshPro"><HintPath>lib\Unity.TextMeshPro.dll</HintPath></Reference>
+	<Reference Include="Assembly-CSharp"><HintPath>..\libs\Assembly-CSharp.dll</HintPath></Reference>
+	<Reference Include="UnityEngine.UI"><HintPath>..\libs\UnityEngine.UI.dll</HintPath></Reference>
+	<Reference Include="Unity.TextMeshPro"><HintPath>..\libs\Unity.TextMeshPro.dll</HintPath></Reference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
