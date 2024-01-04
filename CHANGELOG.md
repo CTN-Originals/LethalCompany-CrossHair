@@ -1,4 +1,6 @@
-# v1.0.4 (Latest)
+# v1.0.5 (Latest)
+- The CrossHair GameOject is now instansiated from the quota monitor text, mostly to change the font. Suggested by [AlbinoGeek](https://github.com/AlbinoGeek).
+### v1.0.4
 - Added [CHANGELOG.md](https://github.com/CTN-Originals/LethalCompany-CrossHair/blob/main/CHANGELOG.md) as a seperate file.
 - Added the [LICENSE](https://github.com/CTN-Originals/LethalCompany-CrossHair/blob/main/LICENSE) file to the distributable folder.
 ### v1.0.3
