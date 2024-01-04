@@ -4,6 +4,7 @@
 *.ahk
 /.vscode/
 *.bat
+NuGet.[C|c]onfig
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
