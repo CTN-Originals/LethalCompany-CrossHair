@@ -9,7 +9,7 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-Credit to the original author (CTN-Originals) of the code is appreciated but not required.
+Credit to the original author (CTN-Originals) of the code.
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.

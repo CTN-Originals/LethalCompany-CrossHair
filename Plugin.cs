@@ -35,7 +35,7 @@ namespace CrossHair
 			CLog = Logger;
 
             // Plugin startup logic
-            Console.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+            CLog.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
 			this.ConfigFile();
 			harmony.PatchAll();
