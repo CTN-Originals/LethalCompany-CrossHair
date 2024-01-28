@@ -4,6 +4,6 @@ namespace CrossHair
     {
         public const string PLUGIN_GUID = "com.ctnoriginals.crosshair";
         public const string PLUGIN_NAME = "CrossHair";
-        public const string PLUGIN_VERSION = "1.0.5";
+        public const string PLUGIN_VERSION = "1.1.0";
     }
 }

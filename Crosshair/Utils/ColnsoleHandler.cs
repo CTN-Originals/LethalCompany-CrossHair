@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CrossHair.Utilities
 {
 	public static class Console {
-		public static bool DebugState = true;
+		public static bool DebugState = false;
 
 		public static void Log(string message) 			{ SendLog(message, "Log"); }
 		public static void LogInfo(string message) 		{ SendLog(message, "LogInfo"); }

@@ -2,10 +2,8 @@
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
-using UnityEngine;
 
 using CrossHair.Utilities;
-using System.Collections;
 
 namespace CrossHair
 {
