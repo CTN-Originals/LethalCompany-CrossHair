@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CrossHair.Utils
+namespace CrossHair.Utilities
 {
 	public static class Console {
 		public static bool DebugState = true;
@@ -14,7 +14,7 @@ namespace CrossHair.Utils
 		public static void LogMessage(string message) 	{ SendLog(message, "LogMessage"); }
 
 		private static void SendLog(string message, string level = null) {
-			if (!DebugState) return;
+			if (!DebugState && (level == "LogDebug" || level == "LogInfo")) return;
 
 			switch(level) {
 				case "LogInfo": 	Plugin.CLog.LogInfo(message); 		break;
