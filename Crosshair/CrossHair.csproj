@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>com.ctnoriginals.CrossHair</AssemblyName>
+    <AssemblyName>com.ctnoriginals.crosshair</AssemblyName>
 	<Product>CrossHair</Product>
     <Description>Adds a CrossHair to the center of your screen to indicate where you are aiming.</Description>
     <Version>1.1.0</Version>
