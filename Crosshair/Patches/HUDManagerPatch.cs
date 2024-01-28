@@ -1,84 +1,90 @@
 using UnityEngine;
 using TMPro;
 using HarmonyLib;
+using CrossHair.Utilities;
 
 namespace CrossHair.Patches 
 {
 	[HarmonyPatch(typeof(HUDManager))]
 	internal class HUDManagerPatch 
 	{
+		public static Transform CrossHair;
+		public static TextMeshProUGUI CrossHairTMP;
+		public static float CrossHairAlpha = 200;
+		public static Transform CrossHairShadow;
+		public static float CrossHairShadowAlpha = 100;
+
 		[HarmonyPatch("Start")]
 		[HarmonyPostfix]
 		private static void Start(ref HUDManager __instance) {
 			//> cursor path: System/UI/Canvas/PlayerCursor/Cursor
 			//> Reference obj: Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)
 			GameObject referenceText = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)");
-			GameObject crossHair = GameObject.Instantiate(referenceText);
-			crossHair.name = "CrossHair";
+			CrossHair = GameObject.Instantiate(referenceText).transform;
+			CrossHair.name = "CrossHair";
 
-			Plugin.crossHair = crossHair;
 			Transform parent = __instance.PTTIcon.transform.parent.parent.parent.Find("PlayerCursor").Find("Cursor").transform;
 
-			TextMeshProUGUI text = crossHair.GetComponent<TextMeshProUGUI>();
+			CrossHairTMP = CrossHair.GetComponent<TextMeshProUGUI>();
 
-			RectTransform rect = text.rectTransform;
+			RectTransform rect = CrossHairTMP.rectTransform;
 			rect.SetParent(parent, false);
 			rect.anchoredPosition = new Vector2(0, 0);
 			rect.localPosition = new Vector3(0, 0, 0);
 			rect.offsetMin = new Vector2(-500, -500);
 			rect.offsetMax = new Vector2(500, 500);
 			
-			text.text = Plugin.CrossHairText.Value;
-			text.fontSize = Plugin.CrossHairSize.Value;
-			text.color = new Color32(
-				(byte)Plugin.CrossHairColor_RED.Value,
-				(byte)Plugin.CrossHairColor_GREEN.Value,
-				(byte)Plugin.CrossHairColor_BLUE.Value,
-				(byte)Plugin.CrossHairColor_ALPHA.Value
-			);
+			string hexColor = Plugin.CrossHairColor.Value;
+			if (hexColor.Length != 6) { hexColor = HexFormatException($"character amount: \"{hexColor}\""); }
 
-			text.alignment = TextAlignmentOptions.Center;
-			text.font = __instance.controlTipLines[0].font;
-			text.enabled = true;
+			int argb = 0xffffff;
+			try { argb = int.Parse(hexColor.Replace("#", ""), System.Globalization.NumberStyles.HexNumber); }
+			catch (System.FormatException) { argb = int.Parse(HexFormatException($"color: \"{hexColor}\""), System.Globalization.NumberStyles.HexNumber); }
+			System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
+
+			CrossHairAlpha = (byte)(Plugin.CrossHairOpacity.Value * 255 / 100); //? convert 0 - 100 to 0 - 255
+			CrossHairShadowAlpha = (byte)(CrossHairAlpha * 50 / 100); //? Calculate shadow alpha as 50% of the crosshair alpha from 0-100 to 0-255
+
+			CrossHairTMP.text = Plugin.CrossHairText.Value;
+			CrossHairTMP.fontSize = Plugin.CrossHairSize.Value;
+			CrossHairTMP.color = new Color32(clr.R, clr.G, clr.B, (byte)Mathf.RoundToInt(CrossHairAlpha));
+
+			Console.LogDebug($"CrossHairColor: ({clr.R}, {clr.G}, {clr.B}, {CrossHairAlpha})");
+
+			CrossHairTMP.alignment = TextAlignmentOptions.Center;
+			CrossHairTMP.font = __instance.controlTipLines[0].font;
+			CrossHairTMP.enabled = true;
 
 			if (Plugin.CrossHairShadow.Value != true) { return; }
 
-			GameObject shadow = GameObject.Instantiate(crossHair, parent);
-			Plugin.crossHairShadow = shadow;
-			TextMeshProUGUI shadowText = shadow.GetComponent<TextMeshProUGUI>();
-			shadow.name = "CrossHairShadow";
+			CrossHairShadow = GameObject.Instantiate(CrossHair, parent);
+			TextMeshProUGUI shadowText = CrossHairShadow.GetComponent<TextMeshProUGUI>();
+			CrossHairShadow.name = "CrossHairShadow";
 			shadowText.fontSize = Plugin.CrossHairSize.Value;
-			shadowText.color = new Color32(byte.MinValue, byte.MinValue, byte.MinValue, 100);
+			shadowText.color = new Color32(byte.MinValue, byte.MinValue, byte.MinValue, (byte)CrossHairShadowAlpha);
 			shadowText.rectTransform.localPosition = new Vector3(2, -2, 0);
 
 			rect.SetAsLastSibling();
 		}
 
+		/// <summary>
+		/// Set the alpha of the crosshair
+		/// </summary>
+		/// <param name="target">Target alpha value (1f = 100%)</param>
+		public static void SetCrossHairAlphaPercent(float target) {
+			if (!CrossHair) { return; }
+			CrossHair.GetComponent<TextMeshProUGUI>().alpha = target * (CrossHairAlpha / 255f);
 
-		[HarmonyPatch("AddChatMessage")]
-		[HarmonyPostfix]
-		private static void AddChatMessage(ref HUDManager __instance) {
-			string message = __instance.lastChatMessage;
-			// Debug.Log("Chat message: " + message);
-			if (message.StartsWith("/update")) {
-				if (Plugin.crossHair) UpdateCrossHairValues(Plugin.crossHair.GetComponent<TextMeshProUGUI>());
-				if (Plugin.crossHairShadow) UpdateCrossHairValues(Plugin.crossHairShadow.GetComponent<TextMeshProUGUI>(), false);
-			}
+			if (!CrossHairShadow) { return; }
+			CrossHairShadow.GetComponent<TextMeshProUGUI>().alpha = target * (CrossHairShadowAlpha / 255f);
 		}
 
-		public static void UpdateCrossHairValues(TextMeshProUGUI element, bool color = true) {
-			Debug.Log("Updating crosshair values");
+		private static string HexFormatException(string message = "color") {
+			Console.LogMessage($"Invalid hex {message}, using default color (ffffff)");
 
-			element.text = Plugin.CrossHairText.Value;
-			element.fontSize = Plugin.CrossHairSize.Value;
-			if (color) {
-				element.color = new Color32(
-					(byte)Plugin.CrossHairColor_RED.Value,
-					(byte)Plugin.CrossHairColor_GREEN.Value,
-					(byte)Plugin.CrossHairColor_BLUE.Value,
-					(byte)Plugin.CrossHairColor_ALPHA.Value
-				);
-			}
+			Plugin.CrossHairColor.Value = "ffffff";
+			Plugin.Config.Save();
+			return "ffffff";
 		}
 	}
 }
