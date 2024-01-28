@@ -4,7 +4,8 @@ using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 
-using CrossHair.Utils;
+using CrossHair.Utilities;
+using System.Collections;
 
 namespace CrossHair
 {
@@ -13,48 +14,44 @@ namespace CrossHair
     {
 		private readonly Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
 
+		public static new ConfigFile Config = new ConfigFile(Paths.ConfigPath + "\\" + PluginInfo.PLUGIN_GUID + ".cfg", true);
+
 		public static ConfigEntry<string> CrossHairText;
 		public static ConfigEntry<float> CrossHairSize;
 		public static ConfigEntry<bool> CrossHairShadow;
 
-		public static ConfigEntry<int> CrossHairColor_RED;
-		public static ConfigEntry<int> CrossHairColor_GREEN;
-		public static ConfigEntry<int> CrossHairColor_BLUE;
-		public static ConfigEntry<int> CrossHairColor_ALPHA;
-
-		public static GameObject crossHair;
-		public static GameObject crossHairShadow;
-
-		public static Plugin Instance;
+		public static ConfigEntry<string> CrossHairColor;
+		public static ConfigEntry<int> CrossHairOpacity;
+		public static ConfigEntry<bool> CrossHairFading;
 
 		public static ManualLogSource CLog;
 
-        private void Awake()
-        {
-			if (Instance == null) {Instance = this;}
-			
+        private void Awake() {
 			CLog = Logger;
-
-            // Plugin startup logic
             CLog.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
 			this.ConfigFile();
 			harmony.PatchAll();
-        }
+		}
 
 		private void ConfigFile() {
-			CrossHairText = Config.Bind("General", "CrossHairText", "-  +  -", "Text to display as crosshair (use \\n for new line)");
-			Console.LogInfo($"CrossHairText: {CrossHairText.Value}");
-			CrossHairSize = Config.Bind("General", "CrossHairSize", 40f, "Size of the crosshair");
-			Console.LogInfo($"CrossHairSize: {CrossHairSize.Value}");
-			CrossHairShadow = Config.Bind("General", "CrossHairShadow", true, "Whether to display a shadow behind the crosshair");
-			Console.LogInfo($"CrossHairShadow: {CrossHairShadow.Value}");
+			CrossHairText = Config.Bind("!General", "CrossHairText", "-  +  -", "Text to display as crosshair (use \\n for new line)");
+			CrossHairSize = Config.Bind("!General", "CrossHairSize", 50f, "Size of the crosshair");
+			CrossHairShadow = Config.Bind("!General", "CrossHairShadow", true, "Whether to display a shadow behind the crosshair");
 
-			CrossHairColor_RED = Config.Bind("Color", "CrossHairColor_RED", 255, "Red value of the crosshair");
-			CrossHairColor_GREEN = Config.Bind("Color", "CrossHairColor_GREEN", 255, "Green value of the crosshair");
-			CrossHairColor_BLUE = Config.Bind("Color", "CrossHairColor_BLUE", 255, "Blue value of the crosshair");
-			CrossHairColor_ALPHA = Config.Bind("Color", "CrossHairColor_ALPHA", 50, "Alpha value of the crosshair");
-			Console.LogInfo($"CrossHairColor: ({CrossHairColor_RED.Value}, {CrossHairColor_GREEN.Value}, {CrossHairColor_BLUE.Value}, {CrossHairColor_ALPHA.Value})");
+			CrossHairColor = Config.Bind("Appearance", "CrossHairColor", "ffffff", "Color of the crosshair in hexadecimal (Do not include the #)");
+			CrossHairOpacity = Config.Bind("Appearance", "CrossHairOpacity", 80, "Opacity of the crosshair (0 to 100)%");
+			CrossHairFading = Config.Bind("Appearance", "CrossHairFading", true, "Whether the crosshair should fade in and out in specific situations");
+
+			Console.LogMessage($"CrossHairText: {CrossHairText.Value}");
+			Console.LogMessage($"CrossHairSize: {CrossHairSize.Value}");
+			Console.LogMessage($"CrossHairShadow: {CrossHairShadow.Value}");
+
+			Console.LogMessage($"CrossHairColor: {CrossHairColor.Value}");
+			Console.LogMessage($"CrossHairOpacity: {CrossHairOpacity.Value}");
+			Console.LogMessage($"CrossHairFading: {CrossHairFading.Value}");
+
+			Config.Save();
 		}
 	}
 }
