@@ -24,9 +24,15 @@ namespace CrossHair
 
 		public static ManualLogSource CLog;
 
+		public static bool DebugMode = false;
+
         private void Awake() {
+			#if DEBUG
+				DebugMode = true;
+			#endif
+
 			CLog = Logger;
-            CLog.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+            CLog.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded! Version: {PluginInfo.PLUGIN_VERSION} ({(DebugMode ? "Debug" : "Release")})");
 
 			this.ConfigFile();
 			harmony.PatchAll();

@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using HarmonyLib;
 using CrossHair.Utilities;
+using System.Collections.Generic;
 
 namespace CrossHair.Patches 
 {
@@ -19,8 +20,19 @@ namespace CrossHair.Patches
 		private static void Start(ref HUDManager __instance) {
 			//> cursor path: System/UI/Canvas/PlayerCursor/Cursor
 			//> Reference obj: Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)
-			GameObject referenceText = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)");
-			CrossHair = GameObject.Instantiate(referenceText).transform;
+			// List<string> refPaths = new List<string>() {
+			// 	"Environment/HangarShip/ShipModels2b/MonitorWall/Cube/Canvas (1)/MainContainer/HeaderText (1)",
+			// 	"Environment/HangarShip/Terminal/Canvas/MainContainer/Scroll View/Viewport/InputField (TMP)/Text Area/Text",
+			// };
+			// GameObject referenceText = new GameObject();
+			// referenceText.AddComponent<TextMeshProUGUI>();
+			// foreach (string path in refPaths) {
+			// 	referenceText = GameObject.Find(path);
+			// 	if (referenceText != null) break;
+			// }
+
+			CrossHair = GameObject.Instantiate(new GameObject().AddComponent<TextMeshProUGUI>()).transform;
+			Console.LogDebug($"{CrossHair.name}");
 			CrossHair.name = "CrossHair";
 
 			Transform parent = __instance.PTTIcon.transform.parent.parent.parent.Find("PlayerCursor").Find("Cursor").transform;

@@ -56,7 +56,7 @@ namespace CrossHair.Patches {
 				if (!GetState()) {
 					isFading = false;
 					fadeTimer = currentFade;
-					Console.LogDebug($"{fieldName} - Un-Matched target value !({targetValue})");
+					// Console.LogDebug($"{fieldName} - Un-Matched target value !({targetValue})");
 				}
 				else if (currentFade > fadeValue) {
 					currentFade = Mathf.Lerp(1f, fadeValue, fadeTimer);
@@ -67,7 +67,7 @@ namespace CrossHair.Patches {
 				if (GetState()) {
 					isFading = true;
 					fadeTimer = 1f - currentFade;
-					Console.LogDebug($"{fieldName} - Matched Target value ({targetValue})");
+					// Console.LogDebug($"{fieldName} - Matched Target value ({targetValue})");
 				}
 				else if (currentFade < 1f) {
 					currentFade = Mathf.Lerp(fadeValue, 1f, fadeTimer);
@@ -92,7 +92,7 @@ namespace CrossHair.Patches {
 		private static void ConnectClientToPlayerObject(ref PlayerControllerB __instance) {
 			PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
 			if (__instance != localPlayer) return;
-			Console.LogInfo($"PlayerControllerB.Start() called");
+			Console.LogInfo($"PlayerControllerB.ConnectClientToPlayerObject() called");
 
 			if (Plugin.CrossHairFading.Value != true) return;
 
@@ -115,9 +115,9 @@ namespace CrossHair.Patches {
 
 			Console.LogDebug($"PlayerControllerB.targetFields.Count: {targetFields.Count}");
 
-			foreach (TargetFieldHook targetField in targetFields) {
-				targetField.LogValues();
-			}
+			// foreach (TargetFieldHook targetField in targetFields) {
+			// 	targetField.LogValues();
+			// }
 
 			// testField = new(__instance, "isHoldingInteract");
 		}

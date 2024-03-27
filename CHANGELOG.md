@@ -1,7 +1,12 @@
-# v1.1.0 (Latest)
+# v1.1.1 (Latest)
+- Issue
+  - On the [Lethal Company Modding](https://discord.gg/lcmod) discord server, a server member ("haxe11") reported an [issue](https://github.com/julian-perge/LC_OpenMonitors/issues/4) on the repo of [OpenMonitors](https://github.com/julian-perge/LC_OpenMonitors) that mentioned an incompatibility with this mod.
+- Fixes
+  - The CrossHair object is no longer cloned from a reference object and is instead instansiated as a empty object, this is to prevent other mods renaming the reference object and breaking this mod because it cant find the reference object anymore.
+## v1.1.0
 ### CrossHair Fading
 - Added CrossHair fading. Suggested by [AlbinoGeek](https://github.com/AlbinoGeek).
-Fading fields:
+- Fading fields:
   - `isWalking`
   - `isSprinting`
   - `isJumping`
@@ -48,3 +53,18 @@ Fading fields:
 - - CrossHairColor_ALPHA: The alpha value of the CrossHair color
 ## v1.0.0 (Released 10-12-2023)
 - Initial release
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<details>
+	<summary>not important</summary>
+
+   - 1.1.1 also added [AC Improvements](https://thunderstore.io/c/lethal-company/p/AprilCompany/AprilCompany/)
+
+</details>

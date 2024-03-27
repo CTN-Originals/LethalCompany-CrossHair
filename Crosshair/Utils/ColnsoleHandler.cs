@@ -3,8 +3,6 @@ using UnityEngine;
 namespace CrossHair.Utilities
 {
 	public static class Console {
-		public static bool DebugState = false;
-
 		public static void Log(string message) 			{ SendLog(message, "Log"); }
 		public static void LogInfo(string message) 		{ SendLog(message, "LogInfo"); }
 		public static void LogError(string message) 	{ SendLog(message, "LogError"); }
@@ -14,7 +12,7 @@ namespace CrossHair.Utilities
 		public static void LogMessage(string message) 	{ SendLog(message, "LogMessage"); }
 
 		private static void SendLog(string message, string level = null) {
-			if (!DebugState && (level == "LogDebug" || level == "LogInfo")) return;
+			if (!Plugin.DebugMode && (level == "LogDebug" || level == "LogInfo")) return;
 
 			switch(level) {
 				case "LogInfo": 	Plugin.CLog.LogInfo(message); 		break;
